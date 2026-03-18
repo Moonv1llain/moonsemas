@@ -331,7 +331,7 @@ const DetailPanel = ({ coin, tech, onClose }) => {
     <>
       <div onClick={onClose} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.85)',zIndex:900}}/>
       <div style={{
-        position:'fixed',top:0,right:0,bottom:0,width:'min(500px,100vw)',
+        position:'fixed',top:0,right:0,bottom:0,width:'min(500px,100vw)', maxWidth:'100vw',
         background:'#080808',
         borderLeft:'1px solid rgba(255,255,255,0.1)',
         zIndex:901,overflowY:'auto',overflowX:'hidden',
@@ -342,7 +342,7 @@ const DetailPanel = ({ coin, tech, onClose }) => {
         <div style={{position:'sticky',top:0,zIndex:10,background:'#080808'}}>
           <div style={{height:'4px',background:color}}/>
           <div style={{
-            padding:'16px 20px 14px',
+            padding:'14px 16px 12px',
             borderBottom:'3px solid #fff',
           }}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
@@ -391,7 +391,7 @@ const DetailPanel = ({ coin, tech, onClose }) => {
         </div>
 
         {/* BODY */}
-        <div style={{padding:'0 20px 60px'}}>
+        <div style={{padding:'0 14px 60px'}}>
 
           {/* CHART — full bleed, no box */}
           <div style={{margin:'20px -20px 0',padding:'0 20px'}}>
@@ -932,9 +932,10 @@ export default function VaultTerminal() {
         ::selection{background:rgba(200,255,37,0.15);color:#C8FF25}
         input::placeholder{color:rgba(255,255,255,0.35)}
         input:focus{outline:none}
+        *{-webkit-tap-highlight-color:transparent;box-sizing:border-box}
       `}</style>
 
-      <div style={{ minHeight:'100vh', background:'#050505', color:'#fff' }}>
+      <div style={{ minHeight:'100vh', background:'#050505', color:'#fff', overflowX:'hidden' }}>
 
         {/* ── TOPBAR ── */}
         <header style={{
@@ -942,7 +943,7 @@ export default function VaultTerminal() {
           background:'rgba(5,5,5,0.97)', backdropFilter:'blur(24px)',
           borderBottom:'1px solid rgba(255,255,255,0.07)',
           display:'flex', alignItems:'center', justifyContent:'space-between',
-          padding:'0 24px', height:'46px', gap:'16px',
+          padding:'0 12px', height:'46px', gap:'8px',
         }}>
           <div style={{ display:'flex', alignItems:'center', gap:'12px', flexShrink:0 }}>
             <span style={{ fontFamily:'"Bebas Neue",sans-serif', fontSize:'16px', letterSpacing:'0.18em', color:'#C8FF25' }}>MOONS EMA SCANNER</span>
@@ -951,7 +952,7 @@ export default function VaultTerminal() {
           </div>
 
           {/* Search bar */}
-          <div style={{ flex:'1', maxWidth:'280px', position:'relative', display:'flex', alignItems:'center' }}>
+          <div style={{ flex:'1', maxWidth:'180px', minWidth:'80px', position:'relative', display:'flex', alignItems:'center' }}>
             <svg style={{ position:'absolute', left:'10px', opacity:0.3 }} width="12" height="12" viewBox="0 0 12 12" fill="none">
               <circle cx="5" cy="5" r="4" stroke="white" strokeWidth="1.5"/>
               <line x1="8.5" y1="8.5" x2="11" y2="11" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
@@ -984,12 +985,12 @@ export default function VaultTerminal() {
         </header>
 
         {/* ── HERO ── */}
-        <section style={{ padding:'44px 24px 32px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
+        <section style={{ padding:'28px 14px 24px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', flexWrap:'wrap', gap:'24px' }}>
             <div>
               <h1 style={{
                 fontFamily:'"Bebas Neue",sans-serif',
-                fontSize:'clamp(68px,10vw,128px)',
+                fontSize:'clamp(52px,14vw,128px)',
                 letterSpacing:'0.04em', lineHeight:0.85,
                 color:'#fff',
               }}>MOONS</h1>
@@ -1017,13 +1018,13 @@ export default function VaultTerminal() {
           borderBottom:'1px solid rgba(255,255,255,0.06)',
         }}>
           {/* Filter tabs */}
-          <div style={{ padding:'8px 24px', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:'8px', borderBottom:'1px solid rgba(255,255,255,0.04)' }}>
+          <div style={{ padding:'8px 12px', display:'flex', justifyContent:'space-between', alignItems:'center', gap:'8px', borderBottom:'1px solid rgba(255,255,255,0.04)', overflowX:'auto', WebkitOverflowScrolling:'touch' }}>
             <div style={{ display:'flex', flexWrap:'wrap', gap:'4px' }}>
               {TABS.map(t => <Pill key={t.key} label={t.label} color={t.color} count={t.count} active={zFilter===t.key} onClick={()=>setZFilter(t.key)} />)}
             </div>
           </div>
           {/* Sort row */}
-          <div style={{ padding:'6px 24px', display:'flex', alignItems:'center', gap:'4px', flexWrap:'wrap' }}>
+          <div style={{ padding:'6px 12px', display:'flex', alignItems:'center', gap:'4px', overflowX:'auto', WebkitOverflowScrolling:'touch' }}>
             <span style={{ fontFamily:'"DM Mono",monospace', fontSize:'10px', color:'rgba(255,255,255,0.45)', letterSpacing:'0.12em', marginRight:'8px' }}>SORT</span>
             {SORTS.map(s => (
               <button key={s.key} onClick={()=>setSortBy(s.key)} style={{
@@ -1040,9 +1041,9 @@ export default function VaultTerminal() {
         </div>
 
         {/* ── GRID ── */}
-        <main style={{ padding:'18px 24px 60px' }}>
+        <main style={{ padding:'14px 10px 60px' }}>
           {loading ? (
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))', gap:'8px' }}>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(min(280px,100%),1fr))', gap:'8px' }}>
               {Array.from({length:24}).map((_,i)=><Skel key={i}/>)}
             </div>
           ) : displayed.length === 0 ? (
@@ -1058,7 +1059,7 @@ export default function VaultTerminal() {
                   {displayed.length} result{displayed.length!==1?'s':''} for "{search.toUpperCase()}"
                 </div>
               )}
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))', gap:'8px' }}>
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(min(280px,100%),1fr))', gap:'8px' }}>
                 {displayed.map(c => (
                   <div key={c.symbol} style={{ animation:'fadein 0.25s ease both' }}>
                     <Card coin={c} tech={techMap[c.symbol]} pinned={c.pinned} onClick={()=>setSelected(c.symbol)} />
