@@ -3459,6 +3459,93 @@ const DENYLIST = new Set([
   'FTMUSDT',    // rebranded → SONIC
 ]);
 
+// ── NAV MENU — hamburger on mobile, inline on desktop ──────────────────────
+const NAV_ITEMS = [
+  { key:'SCANNER',   label:'SCANNER',      icon:'◈' },
+  { key:'LABS',      label:'ALPHA SECTOR', icon:'⚗' },
+  { key:'WAR',       label:'WAR ROOM',     icon:'⚔' },
+  { key:'EDGE',      label:'THE EDGE',     icon:'◉' },
+  { key:'DERIV',     label:'DERIVATIVES',  icon:'◆' },
+  { key:'SENTIMENT', label:'SENTIMENT',    icon:'◎' },
+  { key:'NEWS',      label:'NEWS',         icon:'◍' },
+];
+
+const NavMenu = ({ page, setPage }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleNav = (key) => { setPage(key); setOpen(false); };
+
+  return (
+    <>
+      {/* Hamburger button — always visible, replaces inline nav */}
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          all:'unset', cursor:'pointer', flexShrink:0,
+          display:'flex', flexDirection:'column', gap:'5px',
+          padding:'8px 10px',
+          border:`1px solid ${open ? '#F5A200' : 'rgba(245,162,0,0.35)'}`,
+          background: open ? 'rgba(245,162,0,0.1)' : 'transparent',
+          transition:'all 0.1s',
+        }}
+        aria-label="Menu"
+      >
+        <span style={{ display:'block', width:'20px', height:'2px', background: open ? '#F5A200' : '#F5A200', transition:'all 0.2s', transform: open ? 'rotate(45deg) translate(5px, 5px)' : 'none' }} />
+        <span style={{ display:'block', width:'20px', height:'2px', background:'#F5A200', transition:'all 0.2s', opacity: open ? 0 : 1 }} />
+        <span style={{ display:'block', width:'20px', height:'2px', background: open ? '#F5A200' : '#F5A200', transition:'all 0.2s', transform: open ? 'rotate(-45deg) translate(5px, -5px)' : 'none' }} />
+      </button>
+
+      {/* Current page indicator next to hamburger */}
+      <div style={{ fontFamily:MONO, fontSize:'10px', color:'#F5A200', fontWeight:700, letterSpacing:'0.12em', flexShrink:0 }}>
+        {NAV_ITEMS.find(n=>n.key===page)?.icon} {NAV_ITEMS.find(n=>n.key===page)?.label}
+      </div>
+
+      {/* Dropdown — full width, slides down */}
+      {open && (
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={() => setOpen(false)}
+            style={{ position:'fixed', inset:0, zIndex:290, background:'rgba(0,0,0,0.6)' }}
+          />
+          {/* Menu panel */}
+          <div style={{
+            position:'fixed', top:'48px', right:0, left:0, zIndex:295,
+            background:'#0a0a0a', borderBottom:`3px solid #F5A200`,
+            animation:'fadein 0.15s ease',
+          }}>
+            {NAV_ITEMS.map(({ key, label, icon }) => {
+              const active = page === key;
+              return (
+                <button
+                  key={key}
+                  onClick={() => handleNav(key)}
+                  style={{
+                    all:'unset', cursor:'pointer', display:'flex',
+                    alignItems:'center', gap:'14px', width:'100%',
+                    padding:'16px 24px',
+                    borderBottom:'1px solid rgba(255,255,255,0.06)',
+                    background: active ? 'rgba(245,162,0,0.08)' : 'transparent',
+                    borderLeft: active ? '4px solid #F5A200' : '4px solid transparent',
+                    transition:'all 0.1s',
+                    boxSizing:'border-box',
+                  }}
+                  onMouseEnter={e => { if(!active) e.currentTarget.style.background='rgba(245,162,0,0.04)'; }}
+                  onMouseLeave={e => { if(!active) e.currentTarget.style.background='transparent'; }}
+                >
+                  <span style={{ fontFamily:MONO, fontSize:'16px', color: active ? '#F5A200' : 'rgba(255,255,255,0.3)', width:'24px', flexShrink:0 }}>{icon}</span>
+                  <span style={{ fontFamily:COND, fontWeight:900, fontSize:'22px', color: active ? '#F5A200' : '#fff', letterSpacing:'0.08em', textTransform:'uppercase' }}>{label}</span>
+                  {active && <span style={{ fontFamily:MONO, fontSize:'10px', color:'#F5A200', marginLeft:'auto', letterSpacing:'0.14em' }}>ACTIVE</span>}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
 export default function VaultTerminal() {
   const [coins,    setCoins]    = useState([]);
   const [techMap,  setTechMap]  = useState({});
@@ -3715,22 +3802,8 @@ export default function VaultTerminal() {
             {search && <button onClick={()=>setSearch('')} style={{ all:'unset', position:'absolute', right:'8px', color:'#F5A200', fontSize:'14px', lineHeight:1 }}>×</button>}
           </div>
 
-          {/* Nav */}
-          <div style={{ display:'flex', gap:'2px', flexShrink:0 }}>
-            {[{key:'SCANNER',label:'[SCANNER_]'},{key:'LABS',label:'[ALPHA_SECTOR_]'},{key:'WAR',label:'[WAR_ROOM_]'},{key:'EDGE',label:'[THE_EDGE_]'},{key:'DERIV',label:'[DERIVATIVES_]'},{key:'SENTIMENT',label:'[SENTIMENT_]'},{key:'NEWS',label:'[NEWS_]'}].map(({key,label})=>(
-              <button key={key} onClick={()=>setPage(key)} style={{
-                all:'unset', cursor:'pointer',
-                fontFamily:MONO, fontWeight:700,
-                fontSize:'9px', letterSpacing:'0.14em',
-                padding:'5px 14px',
-                color: page===key ? '#0a0a0a' : '#F5A200',
-                background: page===key ? '#F5A200' : 'transparent',
-                border:`1px solid ${page===key?'#F5A200':'rgba(245,162,0,0.35)'}`,
-                transition:'all 0.1s',
-                textTransform:'uppercase',
-              }}>{label}</button>
-            ))}
-          </div>
+          {/* Nav — hamburger on mobile, inline on desktop */}
+          <NavMenu page={page} setPage={setPage} />
         </header>
 
         {/* ── SCANNER PAGE ── */}
